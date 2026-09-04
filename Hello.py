@@ -21,3 +21,7 @@ print("Day 2:", followers)
 
 followers -= 10
 print("Day 3:", followers)
+
+username = input("Enter Username:")
+age = int(input('Enter Age:'))
+category = input('Enter Content Category:')
