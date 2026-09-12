@@ -8,6 +8,10 @@ while True:
     if stock.lower() == "quit":
         break
 
+    if not stock.isdigit():
+        print("Error: Please enter a valid integer.")
+        continue
+
     stock = int(stock)
     inventory = stock
 
