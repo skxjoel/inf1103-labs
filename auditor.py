@@ -8,16 +8,16 @@ while True:
     if stock.lower() == "quit":
         break
 
+    if stock.startswith("-") and stock[1:].isdigit():
+        print("Error: Stock quantity cannot be negative.")
+        continue
+
     if not stock.isdigit():
         print("Error: Please enter a valid integer.")
         continue
 
     stock = int(stock)
 
-    if stock < 0:
-        print("Error: Stock quantity cannot be negative.")
-        continue
+    inventory += stock
 
-    inventory = stock
-
-    print("Stock quantity:", inventory)
+    print("Current inventory:", inventory)
