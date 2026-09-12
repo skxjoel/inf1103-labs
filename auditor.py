@@ -8,5 +8,7 @@ while True:
     if stock.lower() == "quit":
         break
 
-    inventory = int(stock)
+    stock = int(stock)
+    inventory = stock
+
     print("Stock quantity:", inventory)
