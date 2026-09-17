@@ -17,9 +17,13 @@ def get_valid_input():
         except ValueError:
             print("Error: Please enter a valid integer.")
 
-inventory = 0
-total_units = 0
-failed_entries = 0
+def process_delivery(current_total, new_value):
+    """Adds the new delivery to the running total."""
+    return current_total + new_value
+
+total_inventory = 0
+deliveries_processed = 0
+failed_attempts = 0
 
 def main():
     total_inventory = 0
@@ -31,7 +35,7 @@ def main():
 
         if result == "quit":
             break
-        
+        total_inventory = process_delivery(total_inventory, result)
         total_inventory += result
         deliveries_processed += 1
 
