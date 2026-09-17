@@ -48,6 +48,9 @@ def main():
         if result == "quit":
             break
 
+        if result is None:
+            continue
+        
         tax = calculate_tax(result)
         total_inventory = process_delivery(total_inventory, result)
         deliveries_processed += 1
