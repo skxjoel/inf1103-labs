@@ -21,6 +21,10 @@ def process_delivery(current_total, new_value):
     """Adds the new delivery to the running total."""
     return current_total + new_value
 
+def calculate_tax(amount):
+    """Returns 10% tax for this delivery."""
+    return amount * 0.10
+
 total_inventory = 0
 deliveries_processed = 0
 failed_attempts = 0
@@ -35,8 +39,9 @@ def main():
 
         if result == "quit":
             break
+
+        tax = calculate_tax(result)
         total_inventory = process_delivery(total_inventory, result)
-        total_inventory += result
         deliveries_processed += 1
 
     # if inventory > 500:
