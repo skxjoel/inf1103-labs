@@ -49,6 +49,11 @@ def calculate_tax(amount):
     """Returns 10% tax for this delivery."""
     return amount * 0.10
 
+def save_inventory(total, history):
+    """Writes the total and history to the inventory file."""
+    with open(INVENTORY_FILE, "w") as f:
+        f.write(f"{total}\n")
+        f.write(",".join(str(x) for x in history) + "\n")
 
 def generate_report(total_units, deliveries_processed, failed_attempts, history):
     """Prints the final report."""
@@ -88,7 +93,8 @@ def main():
         if total_inventory > 500:
             print("ALERT: Inventory exceeds 500 units!")
             break
-
+        
+    save_inventory(total_inventory, history)        
     generate_report(total_inventory, deliveries_processed, failed_attempts, history)
 
 
