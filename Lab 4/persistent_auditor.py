@@ -50,13 +50,14 @@ def calculate_tax(amount):
     return amount * 0.10
 
 
-def generate_report(total_units, deliveries_processed, failed_attempts):
+def generate_report(total_units, deliveries_processed, failed_attempts, history):
     """Prints the final report."""
 
     print("\n===== Inventory Report =====")
     print(f"Total Units Processed: {total_units}")
     print(f"Total Deliveries Processed: {deliveries_processed}")
     print(f"Failed/Rejected Entries: {failed_attempts}")
+    print(f"Transaction History: {history}")
 
 
 def main():
@@ -77,6 +78,7 @@ def main():
 
         tax = calculate_tax(result)
         total_inventory = process_delivery(total_inventory, result)
+        history.append(result)
         deliveries_processed += 1
 
         print(f"Delivery accepted: {result}")
@@ -87,7 +89,7 @@ def main():
             print("ALERT: Inventory exceeds 500 units!")
             break
 
-    generate_report(total_inventory, deliveries_processed, failed_attempts)
+    generate_report(total_inventory, deliveries_processed, failed_attempts, history)
 
 
 if __name__ == "__main__":
