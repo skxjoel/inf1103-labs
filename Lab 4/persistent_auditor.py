@@ -1,3 +1,23 @@
+INVENTORY_FILE = "inventory.txt"
+
+
+def load_inventory():
+    """Returns (total, history). Starts empty if the file is missing or unreadable."""
+    try:
+        with open(INVENTORY_FILE, "r", encoding="utf-8-sig") as f:
+            lines = f.read().splitlines()
+        total = int(lines[0])
+        history = []
+        if len(lines) > 1 and lines[1].strip():
+            history = [int(x) for x in lines[1].split(",")]
+        return total, history
+    except FileNotFoundError:
+        return 0, []
+    except (ValueError, IndexError):
+        print("Warning: inventory file is corrupted. Starting empty.")
+        return 0, []
+
+
 def get_valid_input():
     """Returns (value, failed_attempts_added)."""
     while True:
@@ -19,13 +39,16 @@ def get_valid_input():
             print("Error: Please enter a valid integer.")
             return None, 1
 
+
 def process_delivery(current_total, new_value):
     """Adds the new delivery to the running total."""
     return current_total + new_value
 
+
 def calculate_tax(amount):
     """Returns 10% tax for this delivery."""
     return amount * 0.10
+
 
 def generate_report(total_units, deliveries_processed, failed_attempts):
     """Prints the final report."""
@@ -35,9 +58,10 @@ def generate_report(total_units, deliveries_processed, failed_attempts):
     print(f"Total Deliveries Processed: {deliveries_processed}")
     print(f"Failed/Rejected Entries: {failed_attempts}")
 
-def main():
 
-    total_inventory = 0
+def main():
+    total_inventory, history = load_inventory()
+    print(f"Loaded inventory: {total_inventory} units, {len(history)} past transactions")
     deliveries_processed = 0
     failed_attempts = 0
 
@@ -50,7 +74,7 @@ def main():
 
         if result is None:
             continue
-        
+
         tax = calculate_tax(result)
         total_inventory = process_delivery(total_inventory, result)
         deliveries_processed += 1
