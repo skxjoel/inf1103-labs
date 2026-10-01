@@ -44,12 +44,31 @@ def get_valid_product():
             return product
 
 
+def get_valid_quantity():
+    """Keeps asking until a positive integer is entered."""
+    while True:
+        user_input = input("Enter Quantity: ")
+ 
+        try:
+            quantity = int(user_input)
+        except ValueError:
+            print("Error: Please enter a valid integer.")
+            continue
+ 
+        if quantity <= 0:
+            print("Error: Quantity must be greater than zero.")
+            continue
+ 
+        return quantity
+
+
 
 def main():
     orders = load_orders()
     display_orders(orders)
 
     product = get_valid_product()
+    quantity = get_valid_quantity()
 
 if __name__ == "__main__":
     main()
