@@ -21,9 +21,20 @@ def load_orders():
         return []
 
 
+def display_orders(orders):
+    """Prints every saved order."""
+    print("Current Orders:\n")
+    if not orders:
+        print("(no orders yet)")
+    for order_id, product, quantity in orders:
+        print(f"{order_id}, {product}, {quantity}")
+    print()
+
+
 
 def main():
     orders = load_orders()
+    display_orders(orders)
 
 
 
