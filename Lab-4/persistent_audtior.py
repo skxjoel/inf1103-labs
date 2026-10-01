@@ -34,7 +34,20 @@ def display_orders(orders):
     print()
 
 
+def get_valid_product():
+    """Keeps asking until a non-empty product name without commas is entered."""
+    while True:
+        product = input("Enter Product Name: ").strip()
+ 
+        if not product:
+            print("Error: Product name cannot be empty.")
+        elif "," in product:
+            print("Error: Product name cannot contain commas.")
+        else:
+            return product
 
+
+        
 def main():
     orders = load_orders()
     display_orders(orders)
