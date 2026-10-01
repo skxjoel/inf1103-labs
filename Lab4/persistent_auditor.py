@@ -62,6 +62,19 @@ def get_valid_quantity():
         return quantity
 
 
+def next_order_id(orders):
+    """Returns the next unused order ID."""
+    if not orders:
+        return FIRST_ORDER_ID
+    return max(order_id for order_id, _, _ in orders) + 1
+
+
+def add_order(orders, product, quantity):
+    """Creates a new order, appends it to the list, and returns it."""
+    order = (next_order_id(orders), product, quantity)
+    orders.append(order)
+    return order
+
 
 def main():
     orders = load_orders()
@@ -70,5 +83,10 @@ def main():
     product = get_valid_product()
     quantity = get_valid_quantity()
 
+    order_id, product, quantity = add_order(orders, product, quantity)
+    print("\nNew Order Added:")
+    print(f"{order_id},{product},{quantity}")
+
+    
 if __name__ == "__main__":
     main()
