@@ -76,6 +76,13 @@ def add_order(orders, product, quantity):
     return order
 
 
+def save_orders(orders):
+    """Writes all orders to the orders file, one per line."""
+    with open(ORDERS_FILE, "w") as f:
+        for order_id, product, quantity in orders:
+            f.write(f"{order_id},{product},{quantity}\n")
+
+
 def main():
     orders = load_orders()
     display_orders(orders)
@@ -86,6 +93,9 @@ def main():
     order_id, product, quantity = add_order(orders, product, quantity)
     print("\nNew Order Added:")
     print(f"{order_id},{product},{quantity}")
+
+    save_orders(orders)
+    print(f"\nOrder successfully saved to {ORDERS_FILE}")
 
     
 if __name__ == "__main__":
