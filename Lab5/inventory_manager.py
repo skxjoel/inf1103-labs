@@ -3,7 +3,7 @@
 import os
 import json
 
-FILENAME = "inventory.json"
+FILENAME = "data/inventory.json"
 
 
 
