@@ -92,14 +92,46 @@ def save_inventory(inventory):
         json.dump(inventory, f, indent=4)
     print("Inventory saved successfully to inventory.json.")
 
+def show_menu():
+    print("----------- MENU -----------")
+    print("1. Display All Products")
+    print("2. Add Product")
+    print("3. Update Stock")
+    print("4. Search Product")
+    print("5. Save Inventory")
+    print("6. Exit")
+    print("----------------------------")
 
 
 def main():
+    print("=" * 40)
+    print("INVENTORY MANAGEMENT SYSTEM")
+    print("=" * 40)
     inventory = load_inventory()
-    display_all(inventory)
-    add_product(inventory)
-    save_inventory(inventory)
 
+    while True:
+        show_menu()
+        choice = input("Enter option: ").strip()
+        if choice == "1":
+            display_all(inventory)
+        elif choice == "2":
+            add_product(inventory)
+        elif choice == "3":
+            update_stock(inventory)
+        elif choice == "4":
+            print("Search Product")
+            pid = input("Enter Product ID: ").strip()
+            print_product(pid, inventory)
+        elif choice == "5":
+            save_inventory(inventory)
+        elif choice == "6":
+            print("Saving inventory before exit...")
+            save_inventory(inventory)
+            print("Thank you for using Inventory Management System.")
+            print("Program terminated.")
+            break
+        else:
+            print("Invalid option. Please enter 1-6.")
 
 
 if __name__ == "__main__":
