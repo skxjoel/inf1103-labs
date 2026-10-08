@@ -1,3 +1,12 @@
+
+
+import os
+import json
+
+FILENAME = "inventory.json"
+
+
+
 def display_all(inventory):
     print("Current Inventory")
     print("-" * 48)
@@ -62,19 +71,36 @@ def print_product(product_id, inventory):
     print("-" * 48)
 
 
+def load_inventory():
+    if os.path.exists(FILENAME):
+        print("inventory.json found.")
+        try:
+            with open(FILENAME, "r") as f:
+                inventory = json.load(f)
+            print("Inventory loaded successfully.")
+            return inventory
+        except (json.JSONDecodeError, OSError):
+            print("Could not read inventory.json. Starting with empty inventory.")
+            return []
+    print("inventory.json not found. Starting with empty inventory.")
+    return []
+
+
+def save_inventory(inventory):
+    print("Saving inventory...")
+    with open(FILENAME, "w") as f:
+        json.dump(inventory, f, indent=4)
+    print("Inventory saved successfully to inventory.json.")
+
+
 
 def main():
-    inventory = [
-        {"id": "P001", "name": "Laptop", "price": 1200.00, "stock": 15},
-        {"id": "P002", "name": "Mouse", "price": 25.50, "stock": 40},
-        {"id": "P003", "name": "Keyboard", "price": 45.00, "stock": 25},
-    ]
+    inventory = load_inventory()
     display_all(inventory)
     add_product(inventory)
-    update_stock(inventory)
-    print_product(input("Enter Product ID: "), inventory)
-    display_all(inventory)
-    
+    save_inventory(inventory)
+
+
 
 if __name__ == "__main__":
     main()
