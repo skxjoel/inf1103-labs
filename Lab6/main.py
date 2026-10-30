@@ -57,4 +57,4 @@ def main():
         else:
             print("Invalid option.")
 
-main()
+main() #Runs the whole program, calling the main function to start the inventory management system.
