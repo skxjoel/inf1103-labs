@@ -6,12 +6,12 @@ class Product(ABC):
         self.__name = name
         self.__price = price
         self.__stock = stock
-        
+
 
     @abstractmethod
     def get_fulfilment_info(self):
         pass
-
+    
 
     def update_stock(self, quantity):
         if quantity < 0:

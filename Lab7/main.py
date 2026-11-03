@@ -1,5 +1,6 @@
 import json
-from product import Product
+from physical_product import PhysicalProduct
+from digital_product import DigitalProduct
 from inventory import Inventory
 
 FILENAME = "inventory.json"
@@ -10,8 +11,7 @@ def load_inventory(filename):
         with open(filename, "r") as f:
             data = json.load(f)
         for item in data:
-            inventory.add_product(
-                Product(item["product_id"], item["name"], item["price"], item["stock"]))
+            inventory.add_product(create_product(item))
     except FileNotFoundError:
         print("No saved inventory found. Starting empty.")
     return inventory
@@ -21,6 +21,17 @@ def save_inventory(inventory, filename):
     with open(filename, "w") as f:
         json.dump(data, f, indent=4)
     print("Inventory saved.")
+
+    
+def create_product(item):
+    if item["type"] == "physical":
+        return PhysicalProduct(item["product_id"], item["name"], item["price"],
+                               item["stock"], item["weight"])
+    elif item["type"] == "digital":
+        return DigitalProduct(item["product_id"], item["name"], item["price"],
+                              item["stock"], item["download_size"])
+    raise ValueError(f"Unknown product type: {item['type']}")
+
 
 def main():
     inventory = load_inventory(FILENAME)
@@ -32,11 +43,19 @@ def main():
         if choice == "1":
             inventory.display_all()
         elif choice == "2":
+            ptype = input("Type (1 = Physical, 2 = Digital): ")
             pid = input("Product ID: ")
             name = input("Name: ")
             price = float(input("Price: "))
             stock = int(input("Stock: "))
-            inventory.add_product(Product(pid, name, price, stock))
+            if ptype == "1":
+                weight = float(input("Weight (kg): "))
+                inventory.add_product(PhysicalProduct(pid, name, price, stock, weight))
+            elif ptype == "2":
+                size = float(input("Download size (MB): "))
+                inventory.add_product(DigitalProduct(pid, name, price, stock, size))
+            else:
+                print("Invalid product type.")
         elif choice == "3":
             pid = input("Product ID to update: ")
             results = inventory.search_product(pid)
