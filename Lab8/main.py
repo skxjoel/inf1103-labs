@@ -2,10 +2,21 @@ import json
 from physical_product import PhysicalProduct
 from digital_product import DigitalProduct
 from inventory import Inventory
+from product import Product
+from supplier import Supplier
 
-FILENAME = "inventory.json"
+from pathlib import Path
+FILENAME = Path(__file__).parent / "inventory.json"
 
-def load_inventory(filename):
+suppliers: dict[str, Supplier] = {}
+
+def get_or_create_supplier(supplier_id: str, name: str, contact_email: str) -> Supplier:
+      if supplier_id not in suppliers:
+          suppliers[supplier_id] = Supplier(supplier_id, name, contact_email)
+      return suppliers[supplier_id]
+
+
+def load_inventory(filename: str) -> Inventory:
     inventory = Inventory()
     try:
         with open(filename, "r") as f:
@@ -16,24 +27,27 @@ def load_inventory(filename):
         print("No saved inventory found. Starting empty.")
     return inventory
 
-def save_inventory(inventory, filename):
+def save_inventory(inventory: Inventory, filename: str) -> None:
     data = [p.to_dict() for p in inventory.get_products()]
     with open(filename, "w") as f:
         json.dump(data, f, indent=4)
     print("Inventory saved.")
 
     
-def create_product(item):
-    if item["type"] == "physical":
-        return PhysicalProduct(item["product_id"], item["name"], item["price"],
-                               item["stock"], item["weight"])
-    elif item["type"] == "digital":
-        return DigitalProduct(item["product_id"], item["name"], item["price"],
-                              item["stock"], item["download_size"])
-    raise ValueError(f"Unknown product type: {item['type']}")
+def create_product(item: dict) -> Product:
+      s = item.get("supplier", {"supplier_id": "S000", "name": "Unknown supplier",
+                                "contact_email": "unknown@example.com"})
+      supplier = get_or_create_supplier(s["supplier_id"], s["name"], s["contact_email"])
+      if item["type"] == "physical":
+          return PhysicalProduct(item["product_id"], item["name"], item["price"],
+                                 item["stock"], supplier, item["weight"])
+      elif item["type"] == "digital":
+          return DigitalProduct(item["product_id"], item["name"], item["price"],
+                                item["stock"], supplier, item["download_size"])
+      raise ValueError(f"Unknown product type: {item['type']}")
 
 
-def main():
+def main() -> None:
     inventory = load_inventory(FILENAME)
     while True:
         print("\n1. Display all products\n2. Add a product\n3. Update stock"
@@ -44,18 +58,20 @@ def main():
             inventory.display_all()
         elif choice == "2":
             ptype = input("Type (1 = Physical, 2 = Digital): ")
+            if ptype not in ("1", "2"):
+                print("Invalid product type.")
+                continue
             pid = input("Product ID: ")
             name = input("Name: ")
             price = float(input("Price: "))
             stock = int(input("Stock: "))
+            supplier = ask_for_supplier()
             if ptype == "1":
                 weight = float(input("Weight (kg): "))
-                inventory.add_product(PhysicalProduct(pid, name, price, stock, weight))
-            elif ptype == "2":
-                size = float(input("Download size (MB): "))
-                inventory.add_product(DigitalProduct(pid, name, price, stock, size))
+                inventory.add_product(PhysicalProduct(pid, name, price, stock, supplier, weight))
             else:
-                print("Invalid product type.")
+                size = float(input("Download size (MB): "))
+                inventory.add_product(DigitalProduct(pid, name, price, stock, supplier, size))
         elif choice == "3":
             pid = input("Product ID to update: ")
             results = inventory.search_product(pid)
@@ -76,4 +92,15 @@ def main():
         else:
             print("Invalid option.")
 
-main() #Runs the whole program, calling the main function to start the inventory management system.
+
+def ask_for_supplier() -> Supplier:
+      supplier_id = input("Supplier ID: ")
+      if supplier_id in suppliers:
+          return suppliers[supplier_id]
+      name = input("Supplier name: ")
+      contact_email = input("Supplier contact email: ")
+      return get_or_create_supplier(supplier_id, name, contact_email)
+
+
+if __name__ == "__main__":
+      main()

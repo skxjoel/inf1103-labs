@@ -1,7 +1,80 @@
 [
-    {"product_id": "P001", "name": "Laptop", "price": 1200.0, "stock": 20, "type": "physical", "weight": 2.0},
-    {"product_id": "P002", "name": "Mouse", "price": 25.5, "stock": 50, "type": "physical", "weight": 0.1},
-    {"product_id": "P003", "name": "Keyboard", "price": 45.0, "stock": 25, "type": "physical", "weight": 0.8},
-    {"product_id": "P004", "name": "USB Cable", "price": 10.0, "stock": 30, "type": "physical", "weight": 0.05},
-    {"product_id": "D001", "name": "Antivirus License", "price": 39.9, "stock": 100, "type": "digital", "download_size": 250.0}
+    {
+        "product_id": "P001",
+        "name": "Laptop",
+        "price": 1200.0,
+        "stock": 20,
+        "supplier": {
+            "supplier_id": "S001",
+            "name": "TechSource Pte Ltd",
+            "contact_email": "sales@techsource.com"
+        },
+        "type": "physical",
+        "weight": 2.0
+    },
+    {
+        "product_id": "P002",
+        "name": "Mouse",
+        "price": 25.5,
+        "stock": 50,
+        "supplier": {
+            "supplier_id": "S001",
+            "name": "TechSource Pte Ltd",
+            "contact_email": "sales@techsource.com"
+        },
+        "type": "physical",
+        "weight": 0.1
+    },
+    {
+        "product_id": "P003",
+        "name": "Keyboard",
+        "price": 45.0,
+        "stock": 25,
+        "supplier": {
+            "supplier_id": "S001",
+            "name": "TechSource Pte Ltd",
+            "contact_email": "sales@techsource.com"
+        },
+        "type": "physical",
+        "weight": 0.8
+    },
+    {
+        "product_id": "P004",
+        "name": "USB Cable",
+        "price": 10.0,
+        "stock": 30,
+        "supplier": {
+            "supplier_id": "S001",
+            "name": "TechSource Pte Ltd",
+            "contact_email": "sales@techsource.com"
+        },
+        "type": "physical",
+        "weight": 0.05
+    },
+    {
+        "product_id": "D001",
+        "name": "Antivirus License",
+        "price": 39.9,
+        "stock": 100,
+        "supplier": {
+            "supplier_id": "S002",
+            "name": "SoftHub Digital",
+            "contact_email": "support@softhub.com"
+        },
+        "type": "digital",
+        "download_size": 250.0
+    },
+    {
+        "product_id": "D003",
+        "name": "Game Credits",
+        "price": 50.0,
+        "stock": 15,
+        "supplier": {
+            "supplier_id": "S002",
+            "name": "SoftHub Digital",
+            "contact_email": "support@softhub.com"
+        },
+        "type": "digital",
+        "download_size": 400.0
+    }
 ]
