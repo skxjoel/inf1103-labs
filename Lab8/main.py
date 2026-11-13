@@ -51,7 +51,8 @@ def main() -> None:
     inventory = load_inventory(FILENAME)
     while True:
         print("\n1. Display all products\n2. Add a product\n3. Update stock"
-              "\n4. Search for a product\n5. Save inventory\n6. Exit")
+        "\n4. Search for a product\n5. Save inventory\n6. Remove a product"
+        "\n7. Exit")
         choice = input("Choose an option: ")
 
         if choice == "1":
@@ -88,9 +89,14 @@ def main() -> None:
         elif choice == "5":
             save_inventory(inventory, FILENAME)
         elif choice == "6":
+            pid = input("Product ID to remove: ")
+            if inventory.find_product(pid) is not None:
+                inventory.remove_product(pid)
+                print("Product removed from inventory.")
+            else:
+                print("Product not found.")
+        elif choice == "7":
             break
-        else:
-            print("Invalid option.")
 
 
 def ask_for_supplier() -> Supplier:
