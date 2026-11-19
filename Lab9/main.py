@@ -1,9 +1,9 @@
 import json
-from physical_product import PhysicalProduct
-from digital_product import DigitalProduct
 from inventory import Inventory
 from product import Product
+from product_factory import ProductFactory
 from supplier import Supplier
+from input_helpers import get_positive_float, get_non_negative_int, get_non_empty_str
 
 from pathlib import Path
 FILENAME = Path(__file__).parent / "inventory.json"
@@ -25,6 +25,12 @@ def load_inventory(filename: str) -> Inventory:
             inventory.add_product(create_product(item))
     except FileNotFoundError:
         print("No saved inventory found. Starting empty.")
+    except json.JSONDecodeError:
+        print("Saved inventory file is corrupted. Starting empty.")
+        inventory = Inventory()
+    except (KeyError, ValueError) as e:
+        print(f"Saved inventory has an invalid product ({e}). Starting empty.")
+        inventory = Inventory()
     return inventory
 
 def save_inventory(inventory: Inventory, filename: str) -> None:
@@ -33,18 +39,14 @@ def save_inventory(inventory: Inventory, filename: str) -> None:
         json.dump(data, f, indent=4)
     print("Inventory saved.")
 
-    
+
 def create_product(item: dict) -> Product:
       s = item.get("supplier", {"supplier_id": "S000", "name": "Unknown supplier",
                                 "contact_email": "unknown@example.com"})
       supplier = get_or_create_supplier(s["supplier_id"], s["name"], s["contact_email"])
-      if item["type"] == "physical":
-          return PhysicalProduct(item["product_id"], item["name"], item["price"],
-                                 item["stock"], supplier, item["weight"])
-      elif item["type"] == "digital":
-          return DigitalProduct(item["product_id"], item["name"], item["price"],
-                                item["stock"], supplier, item["download_size"])
-      raise ValueError(f"Unknown product type: {item['type']}")
+      extra = item.get("weight", item.get("download_size", 0.0))
+      return ProductFactory.create(item["type"], item["product_id"], item["name"],
+                                   item["price"], item["stock"], supplier, extra)
 
 
 def main() -> None:
@@ -62,25 +64,34 @@ def main() -> None:
             if ptype not in ("1", "2"):
                 print("Invalid product type.")
                 continue
-            pid = input("Product ID: ")
-            name = input("Name: ")
-            price = float(input("Price: "))
-            stock = int(input("Stock: "))
+            pid = get_non_empty_str("Product ID: ")
+            if inventory.find_product(pid) is not None:
+                print("A product with that ID already exists.")
+                continue
+            name = get_non_empty_str("Name: ")
+            price = get_positive_float("Price: ")
+            stock = get_non_negative_int("Stock: ")
             supplier = ask_for_supplier()
             if ptype == "1":
-                weight = float(input("Weight (kg): "))
-                inventory.add_product(PhysicalProduct(pid, name, price, stock, supplier, weight))
+                extra = get_positive_float("Weight (kg): ")
+                product_type = "physical"
             else:
-                size = float(input("Download size (MB): "))
-                inventory.add_product(DigitalProduct(pid, name, price, stock, supplier, size))
+                extra = get_positive_float("Download size (MB): ")
+                product_type = "digital"
+            try:
+                product = ProductFactory.create(product_type, pid, name, price,
+                                                stock, supplier, extra)
+            except ValueError as e:
+                print(f"Product not added: {e}")
+                continue
+            inventory.add_product(product)
+            print("Product added.")
         elif choice == "3":
             pid = input("Product ID to update: ")
             results = inventory.search_product(pid)
             if results:
-                try:
-                    results[0].update_stock(int(input("New stock quantity: ")))
-                except ValueError as e:
-                    print(f"Stock not updated: {e}")
+                results[0].update_stock(get_non_negative_int("New stock quantity: "))
+                print("Stock updated.")
             else:
                 print("Product not found.")
         elif choice == "4":
@@ -100,14 +111,16 @@ def main() -> None:
                 print("Product not found.")
         elif choice == "7":
             break
+        else:
+            print("Invalid option, please choose 1-7.")
 
 
 def ask_for_supplier() -> Supplier:
-      supplier_id = input("Supplier ID: ")
+      supplier_id = get_non_empty_str("Supplier ID: ")
       if supplier_id in suppliers:
           return suppliers[supplier_id]
-      name = input("Supplier name: ")
-      contact_email = input("Supplier contact email: ")
+      name = get_non_empty_str("Supplier name: ")
+      contact_email = get_non_empty_str("Supplier contact email: ")
       return get_or_create_supplier(supplier_id, name, contact_email)
 
 
