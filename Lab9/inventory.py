@@ -5,6 +5,8 @@ class Inventory:
         self.__products: list[Product] = []
 
     def add_product(self, product: Product) -> None:
+        if self.find_product(product.get_product_id()) is not None:
+            raise ValueError(f"Product ID {product.get_product_id()} already exists.")
         self.__products.append(product)
 
     def find_product(self, product_id: str) -> Product | None:
