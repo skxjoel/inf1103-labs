@@ -77,7 +77,10 @@ def main() -> None:
             pid = input("Product ID to update: ")
             results = inventory.search_product(pid)
             if results:
-                results[0].update_stock(int(input("New stock quantity: ")))
+                try:
+                    results[0].update_stock(int(input("New stock quantity: ")))
+                except ValueError as e:
+                    print(f"Stock not updated: {e}")
             else:
                 print("Product not found.")
         elif choice == "4":
