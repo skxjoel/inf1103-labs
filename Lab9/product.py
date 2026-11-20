@@ -9,6 +9,10 @@ class Product(ABC):
         if stock < 0:
             raise ValueError("Stock quantity cannot be negative.")
         self.__product_id = product_id
+        self.__name = name
+        self.__price = price
+        self.__stock = stock
+        self.__supplier: Supplier = supplier
 
 
     @abstractmethod
